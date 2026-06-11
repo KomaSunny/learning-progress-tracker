@@ -238,7 +238,7 @@ Authorization: Bearer <JWT>
 {
   "id": 1,
   "userId": 2,
-  "userName": "山田　花子"
+  "userName": "山田　花子",
   "type": "progress_report",
   "title": "FastAPIの学習",
   "content": "ルーティングとレスポンスの返し方を確認した",
