@@ -84,15 +84,15 @@ APIでエラーが発生した場合は、以下の形式で返す。
 
 ### エラー時の扱い
 
-| ケース                                     | レスポンス                         |
-| ------------------------------------------ | ---------------------------------- |
-| 未ログインで認証必須APIにアクセスした場合  | 401 Unauthorized                   |
-| teacher が投稿作成APIを実行した場合        | 403 Forbidden                      |
-| teacher が投稿更新APIを実行した場合        | 403 Forbidden                      |
-| teacher が投稿削除APIを実行した場合        | 403 Forbidden                      |
-| student が他人の投稿を取得しようとした場合 | 403 Forbidden または 404 Not Found |
-| student が他人の投稿を更新しようとした場合 | 403 Forbidden または 404 Not Found |
-| student が他人の投稿を削除しようとした場合 | 403 Forbidden または 404 Not Found |
+| ケース                                     | レスポンス       |
+| ------------------------------------------ | ---------------- |
+| 未ログインで認証必須APIにアクセスした場合  | 401 Unauthorized |
+| teacher が投稿作成APIを実行した場合        | 403 Forbidden    |
+| teacher が投稿更新APIを実行した場合        | 403 Forbidden    |
+| teacher が投稿削除APIを実行した場合        | 403 Forbidden    |
+| student が他人の投稿を取得しようとした場合 | 404 Not Found    |
+| student が他人の投稿を更新しようとした場合 | 404 Not Found    |
+| student が他人の投稿を削除しようとした場合 | 404 Not Found    |
 
 ---
 
@@ -292,7 +292,7 @@ Authorization: Bearer <JWT>
 - `student` は自分の投稿のみ取得可能
 - `teacher` は生徒全員分の投稿を取得可能
 - `teacher` の場合は、投稿者名を表示できるように `user_id` と `user_name` を含める
-- `student` が他人の投稿を取得しようとした場合は `403 Forbidden` または `404 Not Found` を返す
+- `student` が他人の投稿を取得しようとした場合は `404 Not Found` を返す
 
 #### レスポンス例
 
@@ -331,7 +331,7 @@ Authorization: Bearer <JWT>
 - `student` は自分の投稿のみ更新可能
 - `teacher` はMVPでは更新不可
 - `teacher` が実行した場合は `403 Forbidden` を返す
-- 他人の投稿を更新しようとした場合は `403 Forbidden` または `404 Not Found` を返す
+- `student` が他人の投稿を更新しようとした場合は `404 Not Found` を返す
 
 #### リクエスト例
 
@@ -383,7 +383,7 @@ Authorization: Bearer <JWT>
 - `student` は自分の投稿のみ削除可能
 - `teacher` はMVPでは削除不可
 - `teacher` が実行した場合は `403 Forbidden` を返す
-- 他人の投稿を削除しようとした場合は `403 Forbidden` または `404 Not Found` を返す
+- `student` が他人の投稿を削除しようとした場合は `404 Not Found` を返す
 
 #### レスポンス例
 
