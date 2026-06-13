@@ -5,16 +5,16 @@ FastAPI + PostgreSQL を利用し、学習進捗管理アプリのAPIを提供�
 
 ## 技術スタック
 
-| 種別           | 採用技術                          |
-| -------------- | --------------------------------- |
-| 言語           | Python 3.13                       |
-| フレームワーク | FastAPI                           |
-| ORM            | SQLModel                          |
-| DB             | PostgreSQL 18                     |
-| 認証           | JWT                               |
-| コンテナ       | Docker / Docker Compose           |
-| テスト         | （例：Vitest / Jest + Supertest） |
-| Lint / Format  | ESLint / Prettier                 |
+| 種別           | 採用技術                                  |
+| -------------- | ----------------------------------------- |
+| 言語           | Python 3.13                               |
+| フレームワーク | FastAPI                                   |
+| ORM            | SQLModel                                  |
+| DB             | PostgreSQL 18                             |
+| 認証           | JWT                                       |
+| コンテナ       | Docker / Docker Compose                   |
+| テスト         | 今後検討（例：Vitest / Jest + Supertest） |
+| Lint / Format  | 今後検討　ESLint / Prettier               |
 
 > 詳細は [`docs/技術選定.md`](../docs/技術選定.md) を参照。
 
@@ -25,6 +25,7 @@ FastAPI + PostgreSQL を利用し、学習進捗管理アプリのAPIを提供�
 - PostgreSQL 18
 
 ※ ローカル開発では `Docker Compose` を利用して `backend` と `db` を起動する。
+※ フロントエンドは別ブランチで作業中のため、現状は対象外とする。
 
 ## セットアップ
 
@@ -35,6 +36,13 @@ cp backend/.env.example backend/.env
 ```
 
 ※ `.env.example` の値はローカル開発用のサンプルです。本番環境では使用しません。
+
+## 環境変数
+
+| 変数名         | 内容                      | 備考                                        |
+| -------------- | ------------------------- | ------------------------------------------- |
+| `DATABASE_URL` | PostgreSQLへの接続URL     | 　ローカル開発用の値を `.env.example`に記載 |
+| `DB_ECHO`      | SQLログを出力するかどうか | 　開発中は`true`、本番環境では`false`を想定 |
 
 ## Docker Composeで起動
 
@@ -51,6 +59,7 @@ docker compose ps
 ```
 
 `backend` と `db` が `Up` になっていれば起動成功。
+`db` は `healthcheck` により、接続可能な状態になると `healthy` と表示される。
 
 ## API疎通確認
 
@@ -80,6 +89,8 @@ curl http://localhost:8000/health/db
 { "status": "ok", "db": "connected" }
 ```
 
+DB設定がない場合や、DBに接続できない場合は 503 Service Unavailable を返す。
+
 ## 停止方法
 
 ```bash
@@ -99,6 +110,7 @@ backend/
 ├── app/
 │   ├── api/
 │   │   └── __init__.py
+│   │   └── health.py
 │   ├── core/
 │   │   ├── __init__.py
 │   │   └── config.py
@@ -116,14 +128,27 @@ backend/
 
 ## 各ファイルの役割
 
-| ファイル             | 役割                                                      |
-| -------------------- | --------------------------------------------------------- |
-| `app/main.py`        | FastAPIアプリの作成、ヘルスチェック用エンドポイントの定義 |
-| `app/core/config.py` | 環境変数・設定値の読み込み                                |
-| `app/db/session.py`  | DB接続エンジンとDBセッションの管理                        |
-| `.env.example`       | ローカル開発用の環境変数サンプル                          |
-| `Dockerfile`         | backendコンテナの定義                                     |
-| `requirements.txt`   | Python依存パッケージ一覧                                  |
+| ファイル             | 役割                                         |
+| -------------------- | -------------------------------------------- |
+| `app/main.py`        | FastAPIアプリの作成、ルーター登録            |
+| `app/api/health.py`  | `/health`、`/health/db`のヘルスチェックAPI   |
+| `app/core/config.py` | 環境変数・設定値の読み込み                   |
+| `app/db/session.py`  | DBエンジン作成、DBセッション管理、DB接続確認 |
+| `.env.example`       | ローカル開発用の環境変数サンプル             |
+| `Dockerfile`         | backendコンテナの定義                        |
+| `requirements.txt`   | Python依存パッケージ一覧                     |
+
+## ディレクトリ方針
+
+単一責務の原則を意識し、main.py にすべての処理を書かず、責務ごとにファイルを分ける。
+
+| ディレクトリ   | 方針                                                     |
+| -------------- | -------------------------------------------------------- |
+| `app/api/`     | APIルーターを配置する                                    |
+| `app/core/`    | 環境変数やアプリ全体の設定を管理する                     |
+| `app/db/`      | DB接続、DBセッション、DB接続確認などDB関連処理を管理する |
+| `app/schemas/` | リクエスト・レスポンス用スキーマを配置する               |
+| `app/models/`  | SQLModelのDBモデルを配置する                             |
 
 ## API ドキュメント
 

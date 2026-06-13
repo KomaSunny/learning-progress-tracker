@@ -6,7 +6,10 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - ./backend/.env
+      # .env が未配置でも /health の起動確認をしやすくするため任意にする。
+      # /health/db は DATABASE_URL がない場合 503 を返す。
+      - path: ./backend/.env
+        required: false
     depends_on:
       db:
         condition: service_healthy
@@ -17,6 +20,8 @@ services:
     image: postgres:18
     container_name: learning-progress-db
     ports:
+      # ローカル開発用。PC側の5432番と競合しやすいため5433番を使用する。
+      # 本番環境ではDBポートを外部公開しない想定。
       - "5433:5432"
     environment:
       POSTGRES_USER: postgres
@@ -26,6 +31,8 @@ services:
       - postgres_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d learning_progress_db"]
+      # ローカル開発中に起動確認しやすいよう短めに設定する。
+      # 本番環境ではインフラ要件に合わせて調整する。
       interval: 5s
       timeout: 5s
       retries: 5
