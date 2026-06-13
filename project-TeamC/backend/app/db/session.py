@@ -31,4 +31,7 @@ def get_session() -> Generator[Session, None, None]:
 def check_database_connection() -> None:
     """PostgreSQLへの接続確認を行う。"""
     with Session(get_engine()) as session:
-        session.exec(text("SELECT 1"))
+        result = session.exec(text("SELECT 1")).scalar_one()
+
+    if result != 1:
+        raise RuntimeError("Database health check failed")
