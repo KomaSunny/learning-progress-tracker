@@ -4,15 +4,15 @@
 
 ## 技術スタック
 
-| 種別             | 採用技術 |
-| ---------------- | -------- |
-| 言語             | TypeScript |
-| フレームワーク   | （例：Express / NestJS）|
-| ORM              | （例：Prisma / TypeORM）|
-| DB               | （例：PostgreSQL）|
-| 認証             | （例：JWT / OAuth）|
-| テスト           | （例：Vitest / Jest + Supertest）|
-| Lint / Format    | ESLint / Prettier |
+| 種別           | 採用技術                          |
+| -------------- | --------------------------------- |
+| 言語           | TypeScript                        |
+| フレームワーク | （例：Express / NestJS）          |
+| ORM            | （例：Prisma / TypeORM）          |
+| DB             | （例：PostgreSQL）                |
+| 認証           | （例：JWT / OAuth）               |
+| テスト         | （例：Vitest / Jest + Supertest） |
+| Lint / Format  | ESLint / Prettier                 |
 
 > 詳細は [`docs/技術選定.md`](../docs/技術選定.md) を参照。
 
@@ -89,3 +89,18 @@ backend/
 - [ログ設計](../docs/ログ設計.md)
 - [可用性設計](../docs/可用性設計.md)
 - [セキュリティ設計](../docs/セキュリティ設計.md)
+
+## 動作確認用ログイン情報
+
+### student
+
+- email: user@example.com
+- password: password
+
+### teacher
+
+- email: teacher@example.com
+- password: password
+
+※ 現時点ではJWT認証の動作確認用の仮ユーザーです。
+※ 本番用の認証情報ではありません。
