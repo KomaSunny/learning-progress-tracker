@@ -91,6 +91,24 @@ curl http://localhost:8000/health/db
 
 DB設定がない場合や、DBに接続できない場合は 503 Service Unavailable を返す。
 
+## 動作確認用ログイン情報
+
+JWT認証やrole別表示の動作確認用に、以下のseedユーザーを利用する想定です。
+
+### student
+
+- email: user@example.com
+- password: password
+
+### teacher
+
+- email: teacher@example.com
+- password: password
+
+※ 現時点ではローカル開発・動作確認用の仮ユーザーです。  
+※ 本番用の認証情報ではありません。  
+※ seedユーザーはDB実装Issueで作成します。
+
 ## 停止方法
 
 ```bash
