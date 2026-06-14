@@ -8,12 +8,14 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 dummy_users = [
     {
         "id": 1,
+        "name": "生徒ユーザー",
         "email": "user@example.com",
         "password_hash": hash_password("password"),
         "role": "student",
     },
     {
         "id": 2,
+        "name": "講師ユーザー",
         "email": "teacher@example.com",
         "password_hash": hash_password("password"),
         "role": "teacher",
@@ -49,7 +51,12 @@ def login(request: LoginRequest):
         }
     )
 
-    return TokenResponse(access_token=access_token)
+    return TokenResponse(
+        accessToken=access_token,
+        tokenType="Bearer",
+        expiresIn=3600,
+    )
+
 
 @router.post("/logout", response_model=LogoutResponse)
 def logout():

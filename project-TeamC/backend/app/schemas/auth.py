@@ -7,8 +7,9 @@ class LoginRequest(BaseModel):
 
 
 class TokenResponse(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
+    accessToken: str
+    tokenType: str = "Bearer"
+    expiresIn: int
 
 
 class LogoutResponse(BaseModel):

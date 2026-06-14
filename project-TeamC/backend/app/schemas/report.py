@@ -1,12 +1,14 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
 class ReportBase(BaseModel):
     title: str
     content: str
-    next_action: str | None = None
-    study_minutes: int
-    understanding_level: int
+    nextAction: str | None = None
+    studyMinutes: int
+    understandingLevel: int
 
 
 class ReportCreate(ReportBase):
@@ -19,5 +21,7 @@ class ReportUpdate(ReportBase):
 
 class ReportResponse(ReportBase):
     id: int
-    user_id: int
-    user_name: str
+    userId: int
+    userName: str
+    createdAt: datetime
+    updatedAt: datetime

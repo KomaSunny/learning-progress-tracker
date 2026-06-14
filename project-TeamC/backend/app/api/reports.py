@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.dependencies import get_current_user
@@ -9,23 +11,27 @@ router = APIRouter(prefix="/reports", tags=["reports"])
 dummy_reports = [
     {
         "id": 1,
-        "user_id": 1,
-        "user_name": "生徒ユーザー",
+        "userId": 1,
+        "userName": "生徒ユーザー",
         "title": "Next.jsの学習",
         "content": "App Routerについて学習しました。",
-        "next_action": "認証まわりを復習する",
-        "study_minutes": 90,
-        "understanding_level": 3,
+        "nextAction": "認証まわりを整理する",
+        "studyMinutes": 90,
+        "understandingLevel": 3,
+        "createdAt": datetime(2026, 6, 11, 9, 0, 0, tzinfo=timezone.utc),
+        "updatedAt": datetime(2026, 6, 11, 9, 0, 0, tzinfo=timezone.utc),
     },
     {
         "id": 2,
-        "user_id": 3,
-        "user_name": "別の生徒",
+        "userId": 3,
+        "userName": "別の生徒",
         "title": "Pythonの学習",
         "content": "FastAPIのルーティングを確認しました。",
-        "next_action": "JWT認証を復習する",
-        "study_minutes": 60,
-        "understanding_level": 4,
+        "nextAction": "JWT認証を実装する",
+        "studyMinutes": 60,
+        "understandingLevel": 4,
+        "createdAt": datetime(2026, 6, 11, 10, 0, 0, tzinfo=timezone.utc),
+        "updatedAt": datetime(2026, 6, 11, 10, 0, 0, tzinfo=timezone.utc),
     },
 ]
 
@@ -38,7 +44,7 @@ def get_reports(current_user: dict = Depends(get_current_user)):
     return [
         report
         for report in dummy_reports
-        if report["user_id"] == current_user["id"]
+        if report["userId"] == current_user["id"]
     ]
 
 
@@ -50,18 +56,21 @@ def create_report(
     if current_user["role"] != "student":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="講師ユーザーは投稿を作成できません",
+            detail="この操作はできません",
         )
+
+    now = datetime.now(timezone.utc)
 
     new_report = {
         "id": len(dummy_reports) + 1,
-        "user_id": current_user["id"],
-        "user_name": current_user["name"],
+        "userId": current_user["id"],
+        "userName": current_user["name"],
         **request.model_dump(),
+        "createdAt": now,
+        "updatedAt": now,
     }
 
     dummy_reports.append(new_report)
-
     return new_report
 
 
@@ -75,7 +84,7 @@ def get_report(
     if current_user["role"] == "teacher":
         return report
 
-    if report["user_id"] != current_user["id"]:
+    if report["userId"] != current_user["id"]:
         raise_not_found()
 
     return report
@@ -92,13 +101,14 @@ def update_report(
     if current_user["role"] != "student":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="講師ユーザーは投稿を更新できません",
+            detail="この操作はできません",
         )
 
-    if report["user_id"] != current_user["id"]:
+    if report["userId"] != current_user["id"]:
         raise_not_found()
 
     report.update(request.model_dump())
+    report["updatedAt"] = datetime.now(timezone.utc)
 
     return report
 
@@ -113,10 +123,10 @@ def delete_report(
     if current_user["role"] != "student":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="講師ユーザーは投稿を削除できません",
+            detail="この操作はできません",
         )
 
-    if report["user_id"] != current_user["id"]:
+    if report["userId"] != current_user["id"]:
         raise_not_found()
 
     dummy_reports.remove(report)
