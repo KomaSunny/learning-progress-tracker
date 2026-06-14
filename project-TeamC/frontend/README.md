@@ -1,112 +1,70 @@
 # Frontend
 
-Frontend app for the learning record project.
+このディレクトリには、本プロジェクトのフロントエンドアプリケーションを配置する。
 
-Stack:
+## 技術スタック
 
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
-- pnpm
+| 種別             | 採用技術 |
+| ---------------- | -------- |
+| 言語             | TypeScript |
+| フレームワーク   | （例：Next.js / React）|
+| スタイリング     | （例：Tailwind CSS / CSS Modules）|
+| 状態管理         | （例：Zustand / TanStack Query）|
+| テスト           | （例：Vitest / Playwright）|
+| Lint / Format    | ESLint / Prettier |
 
-## Setup
+> 詳細は [`docs/技術選定.md`](../docs/技術選定.md) を参照。
 
-Install dependencies:
+## 前提
+
+- Node.js: `.nvmrc` / `package.json` の `engines` に従う
+- パッケージマネージャ：（例：pnpm / npm / yarn）
+
+## セットアップ
 
 ```bash
+# 依存関係のインストール
 pnpm install
+
+# 環境変数ファイルの用意
+cp .env.example .env.local
 ```
 
-If PowerShell blocks `pnpm`, use `pnpm.cmd`:
+## 開発
 
 ```bash
-pnpm.cmd install
+pnpm dev          # 開発サーバー起動
+pnpm build        # 本番ビルド
+pnpm start        # 本番ビルドの起動
+pnpm lint         # Lint
+pnpm test         # テスト実行
 ```
 
-## Environment Variables
+## ディレクトリ構成（例）
 
-The backend API base URL is configured with:
-
-```env
-NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+```
+frontend/
+├── public/             # 静的ファイル
+├── src/
+│   ├── app/            # ルーティング / ページ
+│   ├── components/     # 再利用可能な UI コンポーネント
+│   ├── features/       # 機能単位のモジュール
+│   ├── lib/            # ユーティリティ / API クライアント
+│   └── styles/         # グローバルスタイル
+└── tests/              # テストコード
 ```
 
-Create `.env.local` from `.env.example`:
+## コーディング規約
 
-```powershell
-Copy-Item .env.example .env.local
-```
+- フォーマッタ・Lint は CI で強制する。
+- コンポーネントは単一責務を意識し、`features/` 配下に機能ごとに整理する。
+- 型は `any` を避け、API レスポンスは OpenAPI スキーマから自動生成することを推奨。
 
-`.env.local` is for local development and must not be committed.
+## 関連ドキュメント
 
-## JWT Storage Policy
-
-The frontend stores the JWT returned from the backend login API in `LocalStorage`.
-
-Storage key:
-
-```text
-access_token
-```
-
-Save:
-
-```ts
-localStorage.setItem("access_token", accessToken);
-```
-
-Read:
-
-```ts
-const token = localStorage.getItem("access_token");
-```
-
-Remove:
-
-```ts
-localStorage.removeItem("access_token");
-```
-
-JWT issuing and verification are handled by the backend.
-
-## Development
-
-Start the dev server:
-
-```bash
-pnpm dev
-```
-
-If PowerShell blocks `pnpm`, use:
-
-```bash
-pnpm.cmd dev
-```
-
-Open:
-
-```text
-http://localhost:3000
-```
-
-## Checks
-
-Lint:
-
-```bash
-pnpm lint
-```
-
-Build:
-
-```bash
-pnpm build
-```
-
-If PowerShell blocks `pnpm`, use:
-
-```bash
-pnpm.cmd lint
-pnpm.cmd build
-```
+- [PRD](../docs/PRD.md)
+- [要件定義](../docs/要件定義.md)
+- [画面設計](../docs/画面設計.md)
+- [API 設計](../docs/API設計.md)
+- [テスト設計書](../docs/テスト設計書.md)
+- [セキュリティ設計](../docs/セキュリティ設計.md)
