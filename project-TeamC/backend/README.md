@@ -91,6 +91,67 @@ curl http://localhost:8000/health/db
 
 DB設定がない場合や、DBに接続できない場合は 503 Service Unavailable を返す。
 
+## DB初期化・seed投入
+
+DBモデル作成後、以下のコマンドで `users` / `reports` テーブルを作成し、MVPの動作確認用seedユーザーを投入する。
+
+```bash
+docker compose exec backend python -m app.db.seed
+```
+
+この処理では、以下を実行する。
+
+- `users` テーブルの作成
+- `reports` テーブルの作成
+- `student` ユーザーの作成
+- `teacher` ユーザーの作成
+
+seedユーザーは、同じメールアドレスのユーザーが既に存在する場合は重複作成しない。
+
+### DB確認方法
+
+PostgreSQLコンテナに入る。
+
+```bash
+docker compose exec db psql -U postgres -d learning_progress_db
+```
+
+テーブル一覧を確認する。
+
+```sql
+\dt
+```
+
+seedユーザーを確認する。
+
+```sql
+SELECT id, name, email, role FROM users;
+```
+
+psqlを終了する。
+
+```sql
+\q
+```
+
+## 動作確認用ログイン情報
+
+JWT認証やrole別表示の動作確認用に、以下のseedユーザーを利用する想定です。
+
+### student
+
+- email: user@example.com
+- password: password
+
+### teacher
+
+- email: teacher@example.com
+- password: password
+
+※ 現時点ではローカル開発・動作確認用の仮ユーザーです。  
+※ 本番用の認証情報ではありません。  
+※ seedユーザーはDB実装Issueで作成します。
+
 ## 停止方法
 
 ```bash
@@ -109,16 +170,18 @@ docker compose down -v
 backend/
 ├── app/
 │   ├── api/
-│   │   └── __init__.py
 │   │   └── health.py
 │   ├── core/
-│   │   ├── __init__.py
 │   │   └── config.py
 │   ├── db/
+│   │   ├── init_db.py      # DBテーブル作成処理
+│   │   ├── seed.py         # 初期ユーザー投入処理
+│   │   └── session.py      # DB接続・セッション管理
+│   ├── models/
 │   │   ├── __init__.py
-│   │   └── session.py
+│   │   ├── report.py       # reportsテーブル定義
+│   │   └── session.py      # usersテーブル定義
 │   ├── schemas/
-│   │   └── __init__.py
 │   └── main.py
 ├── .env.example
 ├── Dockerfile
