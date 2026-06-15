@@ -1,3 +1,4 @@
+from sqlalchemy.orm import selectinload
 from sqlmodel import Session, desc, select
 
 from app.models.report import Report
@@ -5,13 +6,18 @@ from app.schemas.report import ReportCreate, ReportUpdate
 
 
 def get_reports_for_teacher(session: Session) -> list[Report]:
-    statement = select(Report).order_by(desc(Report.created_at))
+    statement = (
+        select(Report)
+        .options(selectinload(Report.user))
+        .order_by(desc(Report.created_at))
+    )
     return list(session.exec(statement).all())
 
 
 def get_reports_for_student(session: Session, user_id: int) -> list[Report]:
     statement = (
         select(Report)
+        .options(selectinload(Report.user))
         .where(Report.user_id == user_id)
         .order_by(desc(Report.created_at))
     )
@@ -19,7 +25,12 @@ def get_reports_for_student(session: Session, user_id: int) -> list[Report]:
 
 
 def get_report_by_id(session: Session, report_id: int) -> Report | None:
-    return session.get(Report, report_id)
+    statement = (
+        select(Report)
+        .options(selectinload(Report.user))
+        .where(Report.id == report_id)
+    )
+    return session.exec(statement).first()
 
 
 def create_report(session: Session, user_id: int, request: ReportCreate) -> Report:
@@ -36,7 +47,12 @@ def create_report(session: Session, user_id: int, request: ReportCreate) -> Repo
     session.add(report)
     session.commit()
     session.refresh(report)
-    return report
+
+    created_report = get_report_by_id(session, report.id)
+    if created_report is None:
+        raise RuntimeError("Created report was not found")
+
+    return created_report
 
 
 def update_report(session: Session, report: Report, request: ReportUpdate) -> Report:
@@ -51,7 +67,12 @@ def update_report(session: Session, report: Report, request: ReportUpdate) -> Re
     session.add(report)
     session.commit()
     session.refresh(report)
-    return report
+
+    updated_report = get_report_by_id(session, report.id)
+    if updated_report is None:
+        raise RuntimeError("Updated report was not found")
+
+    return updated_report
 
 
 def delete_report(session: Session, report: Report) -> None:
