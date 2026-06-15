@@ -5,6 +5,8 @@ from app.schemas.auth import LoginRequest, LogoutResponse, TokenResponse
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+# reports APIの動作確認用の仮ユーザー
+# DB接続版ログインはJWT認証側の後続対応
 dummy_users = [
     {
         "id": 1,
@@ -19,6 +21,13 @@ dummy_users = [
         "email": "teacher@example.com",
         "password_hash": hash_password("password"),
         "role": "teacher",
+    },
+    {
+        "id": 3,
+        "name": "生徒ユーザー2",
+        "email": "user2@example.com",
+        "password_hash": hash_password("password"),
+        "role": "student",
     },
 ]
 
