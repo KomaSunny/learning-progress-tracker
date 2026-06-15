@@ -30,3 +30,7 @@ class ReportResponse(ReportBase):
     userName: str
     createdAt: datetime
     updatedAt: datetime
+
+
+class ReportDeleteResponse(BaseModel):
+    message: str

@@ -5,7 +5,7 @@ from app.crud import report as report_crud
 from app.db.session import get_session
 from app.dependencies import get_current_user
 from app.models.report import Report
-from app.schemas.report import ReportCreate, ReportResponse, ReportUpdate
+from app.schemas.report import ReportCreate, ReportResponse, ReportUpdate, ReportDeleteResponse
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
@@ -97,7 +97,7 @@ def update_report(
 # DELETE /reports/{id}
 # API設計.md: studentのみ自分の投稿を削除可能。teacherは403 Forbidden。
 # studentが他人の投稿を削除しようとした場合は404を返す。
-@router.delete("/{report_id}")
+@router.delete("/{report_id}", response_model=ReportDeleteResponse)
 def delete_report(
     report_id: int,
     current_user: dict = Depends(get_current_user),
