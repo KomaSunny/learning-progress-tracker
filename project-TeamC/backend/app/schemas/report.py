@@ -5,6 +5,8 @@ from pydantic import BaseModel, Field
 
 
 class ReportBase(BaseModel):
+    # API設計.mdに合わせて、リクエスト/レスポンスのJSON項目はcamelCaseで定義する。
+    # DBモデル側ではsnake_caseを使用するため、API層で変換する。
     type: Literal["daily_report", "progress_report"] = "progress_report"
     title: str
     content: str

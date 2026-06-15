@@ -22,6 +22,13 @@ dummy_users = [
         "password_hash": hash_password("password"),
         "role": "teacher",
     },
+    {
+        "id": 3,
+        "name": "生徒ユーザー2",
+        "email": "user2@example.com",
+        "password_hash": hash_password("password"),
+        "role": "student",
+    },
 ]
 
 
