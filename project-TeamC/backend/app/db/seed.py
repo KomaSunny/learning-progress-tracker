@@ -29,11 +29,17 @@ def seed_users() -> None:
             "password": "password",
             "role": "teacher",
         },
+        {
+            "name": "生徒ユーザー2",
+            "email": "user2@example.com",
+            "password": "password",
+            "role": "student",
+        },
     ]
 
     with Session(get_engine()) as session:
         for user_data in users:
-             # 同じメールアドレスのユーザーが既にいる場合は重複作成しない。
+            # 同じメールアドレスのユーザーが既にいる場合は重複作成しない。
             existing_user = session.exec(
                 select(User).where(User.email == user_data["email"])
             ).first()
