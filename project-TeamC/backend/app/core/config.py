@@ -12,6 +12,12 @@ class Settings(BaseSettings):
     # 本番環境ではSQLや値がログに出るリスクがあるため False にする。
     db_echo: bool = True
 
+    # フロントエンドからのAPIアクセスを許可するオリジン。
+    cors_origins: list[str] = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
