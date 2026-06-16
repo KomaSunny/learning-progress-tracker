@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api";
+import type { AuthUser } from "@/stores/authStore";
 
 export type LoginRequest = {
   email: string;
@@ -6,15 +7,17 @@ export type LoginRequest = {
 };
 
 export type LoginResponse = {
-  access_token: string;
-  user: {
-    id: string;
-    name: string;
-    role: "student" | "teacher";
-  };
+  accessToken: string;
+  tokenType: "Bearer";
+  expiresIn: number;
 };
 
 export async function loginApi(payload: LoginRequest) {
   const { data } = await apiClient.post<LoginResponse>("/auth/login", payload);
+  return data;
+}
+
+export async function fetchMe() {
+  const { data } = await apiClient.get<AuthUser>("/me");
   return data;
 }

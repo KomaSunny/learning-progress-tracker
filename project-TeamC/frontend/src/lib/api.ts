@@ -23,9 +23,15 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 && typeof window !== "undefined") {
+      const requestUrl = error.config?.url ?? "";
+      const isLoginRequest = requestUrl.includes("/auth/login");
+
       localStorage.removeItem("access_token");
       useAuthStore.getState().logout();
-      window.location.replace(new URL("/login", window.location.origin));
+
+      if (!isLoginRequest) {
+        window.location.replace(new URL("/login", window.location.origin));
+      }
     }
 
     return Promise.reject(error);
