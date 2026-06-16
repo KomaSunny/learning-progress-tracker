@@ -25,7 +25,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       try {
         // Authorizationヘッダーは apiClient の request interceptor で
         // localStorage の access_token から自動付与される。
-        const { data } = await apiClient.get<AuthUser>("/users/me");
+        const { data } = await apiClient.get<AuthUser>("/me");
         setAuth(token, data);
       } catch {
         localStorage.removeItem("access_token");
