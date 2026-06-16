@@ -1,7 +1,6 @@
+from app.db.session import check_database_connection
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
-
-from app.db.session import check_database_connection
 
 router = APIRouter(tags=["health"])
 

@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from app.models.user import User
 from sqlalchemy import (
     BigInteger,
     CheckConstraint,
@@ -11,8 +12,6 @@ from sqlalchemy import (
     Text,
 )
 from sqlmodel import Field, Relationship, SQLModel
-
-from app.models.user import User
 
 
 class Report(SQLModel, table=True):

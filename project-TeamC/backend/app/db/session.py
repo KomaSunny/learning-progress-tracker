@@ -1,12 +1,12 @@
 from collections.abc import Generator
 
+from app.core.config import get_settings
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
 from sqlmodel import Session, create_engine
 
-from app.core.config import get_settings
-
 _engine: Engine | None = None
+
 
 def get_engine() -> Engine:
     global _engine
@@ -24,9 +24,11 @@ def get_engine() -> Engine:
 
     return _engine
 
+
 def get_session() -> Generator[Session, None, None]:
     with Session(get_engine()) as session:
         yield session
+
 
 def check_database_connection() -> None:
     """PostgreSQLへの接続確認を行う。"""

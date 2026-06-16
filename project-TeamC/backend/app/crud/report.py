@@ -1,8 +1,7 @@
-from sqlalchemy.orm import selectinload
-from sqlmodel import Session, desc, select
-
 from app.models.report import Report
 from app.schemas.report import ReportCreate, ReportUpdate
+from sqlalchemy.orm import selectinload
+from sqlmodel import Session, desc, select
 
 
 def get_reports_for_teacher(session: Session) -> list[Report]:
@@ -26,9 +25,7 @@ def get_reports_for_student(session: Session, user_id: int) -> list[Report]:
 
 def get_report_by_id(session: Session, report_id: int) -> Report | None:
     statement = (
-        select(Report)
-        .options(selectinload(Report.user))
-        .where(Report.id == report_id)
+        select(Report).options(selectinload(Report.user)).where(Report.id == report_id)
     )
     return session.exec(statement).first()
 

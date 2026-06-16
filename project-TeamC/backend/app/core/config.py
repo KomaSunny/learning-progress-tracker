@@ -2,6 +2,7 @@ from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
     # .env が未配置でも /health は動かせるように、必須ではなく None を許容する。
     # DB接続が必要な処理では、app/db/session.py 側で未設定チェックを行う。
@@ -9,7 +10,7 @@ class Settings(BaseSettings):
 
     # 開発中はSQLログを確認しやすくするため True。
     # 本番環境ではSQLや値がログに出るリスクがあるため False にする。
-    db_echo: bool = True 
+    db_echo: bool = True
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

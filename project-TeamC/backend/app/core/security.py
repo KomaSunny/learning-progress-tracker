@@ -8,7 +8,8 @@ from passlib.context import CryptContext
 # 本番環境では必ず環境変数 SECRET_KEY を設定
 SECRET_KEY = os.getenv("SECRET_KEY", "temporary-secret-key")
 
-# JWT関連の最小構成をfeature/auth-jwt-designブランチの実装に合わせreports APIの動作確認に必要なため以下を追加
+# JWT認証の設定
+# feature/auth-jwt-design と reports API の確認用
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
@@ -25,9 +26,7 @@ def hash_password(password: str) -> str:
 
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(
-        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
-    )
+    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
 
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
