@@ -164,6 +164,15 @@ DB volumeも削除して初期化したい場合は以下を実行する。
 docker compose down -v
 ```
 
+## 開発用コマンド
+
+### フォーマット
+
+コードの見た目を整えるときに使います。
+
+````bash
+python -m ruff format app
+
 ## 現在のディレクトリ構成
 
 ```text
@@ -197,7 +206,7 @@ backend/
 ├── Dockerfile
 ├── README.md
 └── requirements.txt
-```
+````
 
 ## 各ファイルの役割
 
