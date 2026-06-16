@@ -1,0 +1,129 @@
+.page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f0f4f8;
+  box-sizing: border-box;
+}
+
+.columns {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.column {
+  flex: 1;
+  min-width: 0;
+}
+
+.columnHeader {
+  padding: 12px 16px;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 2px solid #3a8a5a;
+  background-color: #4a9e6b;
+  color: white;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.columnBody {
+  min-height: 200px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 0 0 8px 8px;
+  background-color: white;
+}
+
+.monthHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f0f4f8;
+  color: #4a3b2a;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.reportCard {
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.cardEven {
+  background-color: #ffe8d6;
+}
+
+.cardOdd {
+  background-color: #f8f8f8;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.actionArea {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.iconButton {
+  padding: 2px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.backButton {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: #4a9e6b;
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.error {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.empty {
+  padding: 40px 0;
+  color: #aaa;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .columns {
+    flex-direction: column;
+  }
+
+  .column {
+    width: 100%;
+  }
+
+  .backButton {
+    position: static;
+    margin-bottom: 16px;
+  }
+}
