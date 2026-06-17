@@ -1,8 +1,9 @@
 import { create } from "zustand";
 
 export type AuthUser = {
-  id: string;
+  id: number;
   name: string;
+  email: string;
   role: "student" | "teacher";
 };
 

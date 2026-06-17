@@ -1,15 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/stores/authStore";
 
 export function LogoutButton() {
   const router = useRouter();
-  const clearAuth = useAuthStore((state) => state.logout);
 
   function handleLogout() {
-    localStorage.removeItem("access_token");
-    clearAuth();
     router.push("/logout");
   }
 
@@ -19,7 +15,7 @@ export function LogoutButton() {
       type="button"
       onClick={handleLogout}
     >
-      ログアウト
+      {"\u30ed\u30b0\u30a2\u30a6\u30c8"}
     </button>
   );
 }
