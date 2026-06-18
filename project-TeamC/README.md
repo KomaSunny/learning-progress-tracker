@@ -1,9 +1,9 @@
 # 学習進捗管理アプリ
 
 Section 7 チーム開発用のプロジェクトです。  
-オンラインスクールの学習者が、日報や学習進捗を記録・確認できるアプリを開発します。
+オンラインスクールの学習者が、日報や学習進捗を記録・確認できるアプリです。
 
-## 企画
+## 課題と解決方法
 
 ### Issue
 
@@ -32,12 +32,14 @@ MVPでは、`student` と `teacher` のroleを分け、利用できる機能を�
 - ログイン
 - ログイン中ユーザー情報取得
 - ログアウト
+- JWTによる認証
+- 未認証ユーザーのアクセス制御
 
 **student**
 
 - 自分の投稿一覧表示
-- 投稿の新規作成
-- 投稿の詳細表示
+- 日報・進捗報告の新規作成
+- 投稿詳細表示
 - 自分の投稿の編集
 - 自分の投稿の削除
 
@@ -45,6 +47,7 @@ MVPでは、`student` と `teacher` のroleを分け、利用できる機能を�
 
 - 生徒全員分の投稿一覧表示
 - 生徒全員分の投稿詳細表示
+- 投稿者名の確認
 
 ### MVPで対象外とする機能
 
@@ -53,19 +56,15 @@ MVPでは、`student` と `teacher` のroleを分け、利用できる機能を�
 - 講師向けの専用管理画面
 - 生徒名、投稿日、投稿種別による絞り込み
 - 講師による確認ステータス管理
-- 投稿種別の選択UI
 
 ## 投稿種別
 
-投稿には `type`を持たせ、以下の投稿種別を想定します。
+投稿には `type`を持たせ、以下の2種類を扱います。
 
 | type              | 内容                                                           |
 | ----------------- | -------------------------------------------------------------- |
 | `daily_report`    | その日の学習内容や取り組みを記録する投稿                       |
 | `progress_report` | 学習の進み具合、困っていること、次にやることなどを記録する投稿 |
-
-MVPでは `progress_report` を基本とします。
-投稿種別の選択UIが未実装の場合は、`progress_report` をデフォルト値として扱います。
 
 ## role別の利用範囲
 
@@ -75,22 +74,23 @@ MVPでは `progress_report` を基本とします。
 | `teacher` | 生徒全員分の投稿の一覧表示・詳細表示             |
 
 `teacher` はMVPでは投稿の作成・編集・削除はできません。
-また、`/dashboard` は `student` / `teacher` 共通画面とし、ログイン中ユーザーのroleによって表示内容を切り替えます。
 
 ## 技術構成
 
-| レイヤ         | 採用予定                |
+| レイヤ         | 採用技術                |
 | -------------- | ----------------------- |
 | フロントエンド | Next.js / TypeScript    |
-| バックエンド   | Python / FastAPI        |
-| データベース   | PostgreSQL              |
-| ORM            | SQLModelを第一候補      |
-| 認証           | JWT認証                 |
-| 開発環境       | Docker / Docker Compose |
+| バックエンド   | Python 3.13 / FastAPI   |
+| データベース   | PostgreSQL 18           |
+| ORM            | SQLModel                |
+| 認証           | JWT                     |
+| コンテナ       | Docker / Docker Compose |
+| パッケージ管理 | pnpm / pip              |
+| Lint / Format  | ESLint / Ruff           |
 
 ## アーキテクチャ概要
 
-MVPでは、フロントエンド・バックエンド・データベースを分けた構成にします。
+フロントエンド・バックエンド・データベースを分離した構成です。
 
 ```mermaid
 flowchart LR
@@ -112,14 +112,173 @@ flowchart LR
 
 ```text
 .
-├── frontend/   # フロントエンドアプリケーション
-├── backend/    # バックエンドアプリケーション
-└── docs/       # 企画・要件・各種設計ドキュメント
+├── frontend/   # Next.js フロントエンド
+├── backend/    # FastAPI バックエンド
+├──docs/       # 企画・要件・各種設計ドキュメント
+├── docker-compose.yml # frontend・backend・dbの構成
+└── README.md
 ```
 
-## 開発の始め方
+## Docker Composeでの起動方法
 
-各アプリケーションの具体的な起動手順は、今後それぞれのREADMEに追記します。
+Docker Composeを使用して、以下の3サービスをまとめて起動します。
+
+| サービス   | 使用技術   | 公開ポート |
+| ---------- | ---------- | ---------- |
+| `frontend` | Next.js    | `3000`     |
+| `backend`  | FastAPI    | `8000`     |
+| `db`       | PostgreSQL | `5433`     |
+
+### 1. 環境変数の準備
+
+プロジェクトルートで、バックエンド用の環境変数ファイルを作成します。
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+`.env.example`の値はローカル開発用です。本番環境では使用しません。
+
+### 2. コンテナのビルド・起動
+
+フォアグラウンドで起動する場合：
+
+```bash
+docker compose up --build
+```
+
+バックグラウンドで起動する場合：
+
+```bash
+docker compose up --build -d
+```
+
+### 3. 起動状態の確認
+
+```bash
+docker compose ps
+```
+
+以下の3コンテナが起動していることを確認します。
+
+- `learning-progress-frontend`
+- `learning-progress-backend`
+- `learning-progress-db`
+
+DBは、接続可能な状態になると`healthy`と表示されます。
+
+### 4. アクセス先
+
+| 内容            | URL                             |
+| --------------- | ------------------------------- |
+| フロントエンド  | http://localhost:3000           |
+| ログイン画面    | http://localhost:3000/login     |
+| 投稿画面        | http://localhost:3000/dashboard |
+| バックエンドAPI | http://localhost:8000           |
+| Swagger UI      | http://localhost:8000/docs      |
+| ヘルスチェック  | http://localhost:8000/health    |
+| DB接続確認      | http://localhost:8000/health/db |
+
+ルートパス`http://localhost:3000`へアクセスすると、ログイン画面へ遷移します。
+
+### 5. DB初期化・seed投入
+
+```bash
+docker compose exec backend python -m app.db.seed
+```
+
+このコマンドにより、以下を行います。
+
+- `users`テーブルの作成
+- `reports`テーブルの作成
+- 動作確認用studentユーザーの作成
+- 動作確認用teacherユーザーの作成
+
+同じメールアドレスのユーザーが存在する場合、重複作成しません。
+
+### 6. 動作確認用ログイン情報
+
+#### student
+
+生徒ユーザー1
+
+```text
+email: user@example.com
+password: password
+```
+
+生徒ユーザー2
+
+```text
+email: user2@example.com
+password: password
+```
+
+#### teacher
+
+講師ユーザー
+
+```text
+email: teacher@example.com
+password: password
+```
+
+ローカルでの動作確認用ユーザーです。本番環境では使用しません。
+
+### 7. 停止
+
+```bash
+docker compose down
+```
+
+DBデータを含むボリュームも削除する場合：
+
+```bash
+docker compose down -v
+```
+
+`-v`を付けると保存済みのDBデータも削除されるため、注意してください。
+
+### 8. ログの確認
+
+すべてのサービスのログ：
+
+```bash
+docker compose logs -f
+```
+
+サービスを指定する場合：
+
+```bash
+docker compose logs -f frontend
+docker compose logs -f backend
+docker compose logs -f db
+```
+
+### 9. 再ビルドが必要な変更
+
+通常のソースコード変更は、ボリュームマウントによってコンテナへ反映されます。
+
+以下を変更した場合は、再ビルドしてください。
+
+- `Dockerfile`
+- `docker-compose.yml`
+- `package.json`
+- `pnpm-lock.yaml`
+- `pnpm-workspace.yaml`
+- `requirements.txt`
+
+```bash
+docker compose up --build
+```
+
+フロントエンドだけをキャッシュなしで再ビルドする場合：
+
+```bash
+docker compose build frontend --no-cache
+```
+
+## 各アプリケーションの詳細
 
 - フロントエンド：[frontend/README.md](./frontend/README.md)
 - バックエンド：[backend/README.md](./backend/README.md)
@@ -144,10 +303,7 @@ flowchart LR
 
 ### 非機能設計
 
-- [運用設計](./docs/運用設計.md)
-- [性能設計](./docs/性能設計.md)
 - [ログ設計](./docs/ログ設計.md)
-- [可用性設計](./docs/可用性設計.md)
 - [セキュリティ設計](./docs/セキュリティ設計.md)
 
 ### 会議メモ・検討資料
@@ -155,15 +311,16 @@ flowchart LR
 - [企画案だし](./docs/context/meeting/企画案だし.md)
 - [MVP設計メモ](./docs/context/meeting/TeamC_MVP_design.md)
 
-## コントリビュート
+## Git運用
 
 ### 基本方針
 
-- 作業前に最新の `main` を取得する
-- 機能ごとにブランチを作成する
+- 作業前に最新の `develop` を取得する
+- 作業内容ごとに`develop`からブランチを作成する
 - 変更後はPull Requestを作成する
-- Pull Requestでは、変更内容・確認したこと・相談したいことを記載する
-- レビュー後に `main` へマージする
+- Pull Requestでは、変更内容・動作確認・相談したいことを記載する
+- レビュー後に `develop` へマージする
+- `main`は安定版として扱う
 
 ### ブランチ名の例
 
@@ -177,9 +334,9 @@ fix/login-error
 ### コミットメッセージの例
 
 ```text
-ログイン画面を追加
-API設計を整理
-DB設計にreportsテーブルを追加
+feat: ログイン画面を追加
+fix: 投稿取得時のエラーを修正
+docs: READMEと設計書を整理
 ```
 
 ## 補足
