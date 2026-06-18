@@ -1,111 +1,109 @@
-# 学習記録アプリ フロントエンド
+# 学習進捗管理アプリ フロントエンド
 
-このディレクトリは、学習記録アプリのフロントエンドを管理します。
+このディレクトリは、学習進捗管理アプリのフロントエンドを管理します。
 
-Next.js App Router を使用し、ログイン、ログアウト、学習報告の投稿、投稿一覧、講師向け画面などを実装します。
+Next.js App Router を使用し、ログイン、ログアウト、学習報告の投稿、投稿一覧、投稿詳細・編集、講師向け画面などを実装しています。
 
 ## 使用技術
 
-| 種類 | 技術 |
-| --- | --- |
-| フレームワーク | Next.js |
-| UI ライブラリ | React |
-| 言語 | TypeScript |
-| スタイリング | Tailwind CSS / CSS Modules |
-| 状態管理 | Zustand |
-| API通信 | Axios |
-| フォーム | react-hook-form |
-| バリデーション | zod |
-| パッケージ管理 | pnpm |
-| Lint | ESLint |
+| 種類           | 技術                       |
+| -------------- | -------------------------- |
+| フレームワーク | Next.js                    |
+| UI ライブラリ  | React                      |
+| 言語           | TypeScript                 |
+| スタイリング   | Tailwind CSS / CSS Modules |
+| 状態管理       | Zustand                    |
+| API通信        | Axios                      |
+| フォーム       | react-hook-form            |
+| バリデーション | zod                        |
+| カレンダー     | react-calendar             |
+| パッケージ管理 | pnpm                       |
+| Lint           | ESLint                     |
 
 ## 前提
 
-- Node.js: 現時点では `.nvmrc` / `package.json` の `engines` は未設定です。チームで指定された Node.js を使用してください。
-- パッケージマネージャ: `package.json` の `packageManager` に従い、`pnpm@11.5.2` を使用します。
+- Docker Desktopが起動していること
+- Docker Composeを利用できること
+- フロントエンド、バックエンド、DBはDocker Composeで起動する
+
+フロントエンドコンテナではNode.js 22とpnpmを使用します。
+
+Dockerを使用せずフロントエンドをローカルで直接実行する場合は、`package.json`の`packageManager`に従い、`pnpm@11.5.2`を使用します。
 
 ## セットアップ手順
 
-### 1. フロントエンドディレクトリへ移動する
+### 1. プロジェクトルートへ移動する
 
-```powershell
-cd frontend
+```bash
+cd project-TeamC
 ```
 
-### 2. 依存関係をインストールする
+### 2. 環境変数を確認する
 
-```powershell
-pnpm.cmd install
-```
-
-`node_modules` が作成されれば成功です。
-
-### 3. 環境変数ファイルを作成する
-
-`.env.example` をもとに、`.env.local` を作成します。
-
-```powershell
-copy .env.example .env.local
-```
-
-### 4. `.env.local` を確認する
-
-ローカル開発では、以下のように設定します。
+フロントエンドでは、以下の環境変数を使用してバックエンドAPIへ接続します。
 
 ```env
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 ```
 
-| 環境変数名 | 内容 |
-| --- | --- |
-| `NEXT_PUBLIC_API_BASE_URL` | フロントエンドから接続するバックエンドAPIのURL |
+Docker Compose利用時は、Composeまたは環境変数ファイルに設定された値を使用します。
 
-Next.js でブラウザ側から参照する環境変数は、名前を `NEXT_PUBLIC_` で始める必要があります。
+### 3. Docker Composeで起動する
 
-### 5. バックエンドとDBを起動する
+フロントエンド、バックエンド、DBをまとめて起動します。
 
-フロントエンドのログイン機能を確認するには、バックエンドとDBが起動している必要があります。
-
-別のPowerShellで、プロジェクトルートへ移動します。
-
-```powershell
-cd project-TeamC
+```bash
+docker compose up --build
 ```
 
-Docker Compose を起動します。
+バックグラウンドで起動する場合は、以下を実行します。
 
-```powershell
-docker compose up -d
+```bash
+docker compose up -d --build
 ```
 
-起動確認をします。
+### 4. 起動状態を確認する
 
-```powershell
+```bash
 docker compose ps
 ```
 
-`backend` と `db` が `Up` になっていればOKです。
+`frontend`、`backend`、`db`が起動状態になっていれば準備完了です。
 
-### 6. フロントエンド開発サーバーを起動する
+### 5. アプリを開く
 
-```powershell
-pnpm.cmd dev
-```
-
-通常は以下で起動します。
+フロントエンド：
 
 ```text
 http://localhost:3000
 ```
 
-もし `3000` が使用中の場合は、`3001` など別のポートが表示されます。
+バックエンドのSwagger UI：
+
+```text
+http://localhost:8000/docs
+```
+
+### ローカルでフロントエンドを直接実行する場合
+
+通常はDocker Composeで起動しますが、フロントエンドだけをローカルで直接実行する場合は、`frontend`ディレクトリで依存関係をインストールします。
+
+```bash
+cd frontend
+pnpm install
+pnpm dev
+```
 
 ## 開発環境とよく使うコマンド
 
+以下は、フロントエンドをローカルで直接実行する場合に、`frontend`ディレクトリで使用するコマンドです。事前に`pnpm install`を実行してください。
+
+> Windows環境で`pnpm`が認識されない場合は、`pnpm.cmd`へ読み替えてください。
+
 ### 開発サーバーを起動する
 
-```powershell
-pnpm.cmd dev
+```bash
+pnpm dev
 ```
 
 Next.js の開発サーバーを起動します。
@@ -118,43 +116,45 @@ http://localhost:3000
 
 ### 本番用ビルドを確認する
 
-```powershell
-pnpm.cmd build
+```bash
+pnpm build
 ```
 
 TypeScript や Next.js のビルドエラーがないか確認します。
 
 ### ビルド済みアプリを起動する
 
-```powershell
-pnpm.cmd start
+```bash
+pnpm start
 ```
 
-`pnpm.cmd build` 実行後に、本番モードでアプリを起動します。
+`pnpm build` 実行後に、本番モードでアプリを起動します。
 
 ### ESLint を実行する
 
-```powershell
-pnpm.cmd lint
+```bash
+pnpm lint
 ```
 
 `src` 配下のコードに構文エラーや未使用 import などがないか確認します。
 
 ### 依存関係を確認する
 
-```powershell
-pnpm.cmd list
+```bash
+pnpm list
 ```
 
 インストール済みのパッケージを確認します。
 
 特定のパッケージを確認する場合は、以下のように実行します。
 
-```powershell
-pnpm.cmd list axios zustand
+```bash
+pnpm list axios zustand
 ```
 
 ## 動作確認用アカウント
+
+> 以下はローカル開発・動作確認用のseedデータです。本番環境では使用しません。
 
 バックエンドのseedデータが投入されている場合、以下のアカウントで確認できます。
 
@@ -221,7 +221,7 @@ frontend/
 ├─ public/                  # 画像などの静的ファイル
 ├─ src/
 │  ├─ app/                  # Next.js App Router のページ
-│  │  ├─ dashboard/         # student用ダッシュボード
+│  │  ├─ dashboard/         # student用投稿作成画面
 │  │  ├─ teacher/           # teacher用ページ
 │  │  ├─ login/             # ログイン画面
 │  │  ├─ logout/            # ログアウト画面
@@ -247,7 +247,7 @@ frontend/
 │  └─ types/                # 型定義
 │     └─ report.ts          # 投稿関連の型
 ├─ .env.example             # 環境変数サンプル
-├─ .env.local               # ローカル環境変数
+├─ .env.local               # 各開発者が作成するローカル環境変数（Git管理外）
 ├─ middleware.ts            # Next.js Middleware
 ├─ package.json             # scripts と依存関係
 ├─ pnpm-lock.yaml           # pnpm lockfile
@@ -260,33 +260,29 @@ frontend/
 
 ### `localhost:3000` が使われている場合
 
-すでにNext.jsの開発サーバーが起動している可能性があります。
+すでにfrontendコンテナまたはNext.jsの開発サーバーが起動している可能性があります。
 
-表示例:
+まず、Docker Composeの起動状態を確認します。
 
-```text
-Port 3000 is in use
+```bash
+docker compose ps
 ```
 
-既存のサーバーを使う場合は、ブラウザで以下を開きます。
+frontendコンテナを停止する場合：
 
-```text
-http://localhost:3000
+```bash
+docker compose stop frontend
 ```
 
-停止したい場合は、表示されたPIDを使って停止します。
-
-```powershell
-taskkill /PID <PID番号> /F
-```
+ローカルで起動したNext.jsを停止する場合は、起動中のターミナルで`Ctrl + C`を押します。
 
 ### ログインできない場合
 
 以下を確認してください。
 
 - Docker Desktop が起動しているか
-- `docker compose ps` で `backend` と `db` が `Up` になっているか
-- `.env.local` に `NEXT_PUBLIC_API_BASE_URL=http://localhost:8000` が設定されているか
+- `docker compose ps` で `frontend`、`backend` 、 `db` が 起動状態になっているか
+- Docker Composeまたは`.env.local` に `NEXT_PUBLIC_API_BASE_URL=http://localhost:8000` が正しく設定されているか
 - ブラウザの `localStorage` に古い `access_token` が残っていないか
 
 古いトークンが残っている場合は、一度ログアウトするか、開発者ツールから `access_token` を削除してください。
@@ -310,7 +306,7 @@ teacherの場合は `/teacher` に遷移します。
 
 Gitに追加しないでください。
 
-```powershell
+```
 git status
 ```
 
@@ -328,19 +324,20 @@ node_modules/
 
 ### build後に `next-env.d.ts` が変更される場合
 
-`pnpm.cmd build` の実行後に `next-env.d.ts` が変更されることがあります。
+`pnpm build` の実行後に `next-env.d.ts` が変更されることがあります。
 
 意図しない差分であれば、コミット前に差分を確認してください。
 
-```powershell
-git diff project-TeamC/frontend/next-env.d.ts
+```
+git diff -- frontend/next-env.d.ts
 ```
 
 ## 関連ドキュメント
 
-- [PRD](../docs/PRD.md)
 - [要件定義](../docs/要件定義.md)
 - [画面設計](../docs/画面設計.md)
+- [技術選定](../docs/技術選定.md)
 - [API 設計](../docs/API設計.md)
+- [DB設計](../docs/DB設計.md)
 - [テスト設計書](../docs/テスト設計書.md)
 - [セキュリティ設計](../docs/セキュリティ設計.md)
