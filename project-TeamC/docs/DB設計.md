@@ -1,10 +1,5 @@
 # DB 設計
 
-> ER 図は draw.io で作成し、リポジトリ内（例：`docs/diagrams/erd.drawio`）で管理することを推奨。
->
-> - draw.io: https://www.drawio.com/
-> - VSCode Extension: Draw.io Integration
-
 ## 1. 設計方針
 
 - 採用DBMS：PostgreSQL
