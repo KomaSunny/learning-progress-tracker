@@ -114,7 +114,7 @@ flowchart LR
 .
 ├── frontend/   # Next.js フロントエンド
 ├── backend/    # FastAPI バックエンド
-├──docs/       # 企画・要件・各種設計ドキュメント
+├── docs/       # 企画・要件・各種設計ドキュメント
 ├── docker-compose.yml # frontend・backend・dbの構成
 └── README.md
 ```
@@ -287,7 +287,6 @@ docker compose build frontend --no-cache
 
 ### 企画・要件
 
-- [PRD](./docs/PRD.md)
 - [要件定義](./docs/要件定義.md)
 
 ### 設計

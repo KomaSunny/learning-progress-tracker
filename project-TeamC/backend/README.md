@@ -326,7 +326,6 @@ http://localhost:8000/docs
 
 ## 関連ドキュメント
 
-- [PRD](../docs/PRD.md)
 - [要件定義](../docs/要件定義.md)
 - [API 設計](../docs/API設計.md)
 - [DB 設計](../docs/DB設計.md)
